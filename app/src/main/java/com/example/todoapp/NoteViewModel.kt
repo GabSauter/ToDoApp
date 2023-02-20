@@ -3,6 +3,10 @@ package com.example.todoapp
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import androidx.room.RoomDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NoteViewModel(
     application: Application,
@@ -12,24 +16,33 @@ class NoteViewModel(
     var allNotes: LiveData<List<Note>>
 
     init {
-        repository = NoteRepository(application)
+        val noteDB = NoteDatabase.getInstance(application).noteDao()
+        repository = NoteRepository(noteDB)
         allNotes = repository.allNotes
     }
 
     fun insert(note: Note){
-        repository.insert(note)
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.insert(note)
+        }
     }
 
     fun delete(note: Note){
-        repository.delete(note)
+        viewModelScope.launch (Dispatchers.IO){
+            repository.delete(note)
+        }
     }
 
     fun update(note: Note){
-        repository.update(note)
+        viewModelScope.launch (Dispatchers.IO){
+            repository.update(note)
+        }
     }
 
     fun deleteAllNotes(){
-        repository.deleteAllNotes()
+        viewModelScope.launch (Dispatchers.IO){
+            repository.deleteAllNotes()
+        }
     }
 
 }
