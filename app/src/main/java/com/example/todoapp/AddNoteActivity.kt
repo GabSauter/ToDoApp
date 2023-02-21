@@ -32,7 +32,15 @@ class AddNoteActivity : AppCompatActivity() {
         npPriority.maxValue = 10
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
-        title = "Add Note"
+
+        if(intent.hasExtra("EXTRA_ID")){
+            title = "Edit Note"
+            etTitle.setText(intent.getStringExtra("EXTRA_TITLE"))
+            etDescription.setText(intent.getStringExtra("EXTRA_DESCRIPTION"))
+            npPriority.value = intent.getIntExtra("EXTRA_PRIORITY", 1)
+        }else{
+            title = "Add Note"
+        }
     }
 
     private fun saveNote(){
@@ -49,6 +57,11 @@ class AddNoteActivity : AppCompatActivity() {
         data.putExtra(EXTRA_TITLE, title)
         data.putExtra(EXTRA_DESCRIPTION, description)
         data.putExtra(EXTRA_PRIORITY, priority)
+
+        val id = intent.getIntExtra("EXTRA_ID",-1)
+        if(id != -1){
+            data.putExtra("EXTRA_ID", id)
+        }
 
         setResult(RESULT_OK, data)
         finish()

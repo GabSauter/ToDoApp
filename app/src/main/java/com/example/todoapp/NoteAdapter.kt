@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 class NoteAdapter: RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
 
     private var notes: List<Note> = ArrayList()
+    private lateinit var listener: OnItemClickListener
 
-    class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tvTitle: TextView
         var tvDescription: TextView
         var tvPriority: TextView
@@ -19,6 +20,10 @@ class NoteAdapter: RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
             tvTitle = itemView.findViewById(R.id.tv_title)
             tvDescription = itemView.findViewById(R.id.tv_description)
             tvPriority = itemView.findViewById(R.id.tv_priority)
+
+            itemView.setOnClickListener {
+                listener.onItemClick(notes[adapterPosition])
+            }
         }
     }
 
@@ -48,4 +53,11 @@ class NoteAdapter: RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
         holder.tvPriority.text = currNote.priority.toString()
     }
 
+    interface OnItemClickListener {
+        fun onItemClick(note: Note)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener){
+        this.listener = listener
+    }
 }

@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
+    val ADD_NOTE_REQUEST = 1
+    val EDIT_NOTE_REQUEST = 2
 
     lateinit var noteViewModel: NoteViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val btnAddNote = findViewById<FloatingActionButton>(R.id.btn_add_note)
         btnAddNote.setOnClickListener {
             val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
-            resultLauncher.launch(intent)
+            resultLauncherCreate.launch(intent)
         }
 
         val rv: RecyclerView = findViewById(R.id.rv)
@@ -55,18 +57,50 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(rv)
+
+
+        adapter.setOnItemClickListener(object : NoteAdapter.OnItemClickListener {
+            override fun onItemClick(note: Note) {
+                val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
+                intent.putExtra("EXTRA_TITLE", note.title)
+                intent.putExtra("EXTRA_DESCRIPTION", note.description)
+                intent.putExtra("EXTRA_PRIORITY", note.priority)
+                intent.putExtra("EXTRA_ID", note.id)
+                resultLauncherEdit.launch(intent)
+            }
+        })
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+    private var resultLauncherCreate = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == Activity.RESULT_OK){
             val title = result.data?.getStringExtra("EXTRA_TITLE")
             val description = result.data?.getStringExtra("EXTRA_DESCRIPTION")
-            val priority = result.data?.getIntExtra("EXTRA_PRIORITY", 0)
+            val priority = result.data?.getIntExtra("EXTRA_PRIORITY", 1)
 
             val note = Note(0, title!!, description!!, priority!!)
             noteViewModel.insert(note)
 
             Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+        } else{
+            Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private var resultLauncherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK){
+
+            val id = result.data?.getIntExtra("EXTRA_ID", -1)
+            val title = result.data?.getStringExtra("EXTRA_TITLE")
+            val description = result.data?.getStringExtra("EXTRA_DESCRIPTION")
+            val priority = result.data?.getIntExtra("EXTRA_PRIORITY", 1)
+
+            if(id == -1){
+                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show()
+            }else{
+                val note = Note(id!!, title!!, description!!, priority!!)
+                noteViewModel.update(note)
+                Toast.makeText(this, "Note edited and saved", Toast.LENGTH_SHORT).show()
+            }
         } else{
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
         }
