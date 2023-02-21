@@ -37,6 +37,10 @@ class NoteAdapter: RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
         notifyDataSetChanged()
     }
 
+    fun getNoteAt(position: Int): Note{
+        return notes[position]
+    }
+
     override fun onBindViewHolder(holder: NoteHolder, position: Int) {
         val currNote = notes[position]
         holder.tvTitle.text = currNote.title
