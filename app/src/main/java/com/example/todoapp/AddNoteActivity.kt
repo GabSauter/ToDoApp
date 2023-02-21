@@ -12,9 +12,9 @@ import android.widget.Toast
 
 class AddNoteActivity : AppCompatActivity() {
 
-    private val EXTRA_TITLE = "com.example.todoapp.EXTRA_TITLE"
-    private val EXTRA_DESCRIPTION = "com.example.todoapp.EXTRA_DESCRIPTION"
-    private val EXTRA_PRIORITY = "com.example.todoapp.EXTRA_PRIORITY"
+    val EXTRA_TITLE = "EXTRA_TITLE"
+    val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
+    val EXTRA_PRIORITY = "EXTRA_PRIORITY"
 
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
