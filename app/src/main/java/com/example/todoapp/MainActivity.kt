@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
         noteViewModel.allNotes.observe(this, Observer{
-            adapter.setNotes(it)
+            adapter.notes = it
         })
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
